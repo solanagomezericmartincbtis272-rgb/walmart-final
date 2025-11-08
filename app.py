@@ -2,10 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from pymongo import MongoClient
 from bson import ObjectId
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='flask_mongo_crud_alumnos/templates')
 app.secret_key = "clave_super_secreta"
 
-app = Flask(__name__, template_folder="walmart_flask_app/templates", static_folder="walmart_flask_app/static")
 
 
 # ------------------ CONEXIÓN A MONGODB ------------------
