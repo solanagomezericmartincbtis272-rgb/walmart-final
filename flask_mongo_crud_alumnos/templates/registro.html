@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro - Walmart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f5f6f7;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .card {
+      border: none;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border-radius: 15px;
+      padding: 30px;
+    }
+    .btn-walmart {
+      background-color: #0071ce;
+      color: white;
+      border-radius: 8px;
+      font-weight: 500;
+      width: 100%;
+    }
+    .btn-walmart:hover {
+      background-color: #005fa3;
+    }
+    .link-login {
+      text-decoration: none;
+      color: #0071ce;
+      font-weight: 500;
+    }
+    .link-login:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card" style="max-width: 400px; width: 100%;">
+      <h3 class="text-center mb-4">Crear cuenta Walmart</h3>
+
+      {% if mensaje %}
+      <div class="alert alert-info text-center">{{ mensaje }}</div>
+      {% endif %}
+
+      <form method="POST">
+        <div class="mb-3">
+          <label for="usuario" class="form-label">Nombre de usuario</label>
+          <input type="text" class="form-control" name="usuario" id="usuario" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="contrasena" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" name="contrasena" id="contrasena" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="confirmar" class="form-label">Confirmar contraseña</label>
+          <input type="password" class="form-control" name="confirmar" id="confirmar" required>
+        </div>
+
+        <button type="submit" class="btn btn-walmart">Registrarme</button>
+      </form>
+
+      <div class="text-center mt-3">
+        <p>¿Ya tienes cuenta? <a href="{{ url_for('login') }}" class="link-login">Inicia sesión</a></p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

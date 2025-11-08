@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrito | Walmart</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar {
+      background-color: #0071ce;
+    }
+
+    .navbar-brand {
+      color: white !important;
+      font-weight: bold;
+    }
+
+    .carrito-container {
+      max-width: 1200px;
+      margin: 40px auto;
+    }
+
+    .carrito-item {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+      margin-bottom: 15px;
+      transition: 0.2s;
+    }
+
+    .carrito-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .producto-imagen {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      border-radius: 8px;
+      padding: 5px;
+      border: 1px solid #eee;
+    }
+
+    .precio-actual {
+      color: #0071ce;
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+
+    .btn-walmart {
+      background-color: #0071ce;
+      color: white;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+
+    .btn-walmart:hover {
+      background-color: #005aa3;
+      color: white;
+    }
+
+    .resumen {
+      background-color: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .formulario-pago {
+      display: none;
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      animation: aparecer 0.4s ease;
+    }
+
+    @keyframes aparecer {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .tarjeta-input {
+      border-radius: 10px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    .tarjeta-input:focus {
+      border-color: #0071ce;
+      box-shadow: 0 0 5px rgba(0,113,206,0.3);
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('inicio') }}">Walmart</a>
+      <div class="ms-auto text-white">
+        <i class="bi bi-person-circle"></i> {{ usuario }}
+        <a href="{{ url_for('logout') }}" class="text-white ms-3"><i class="bi bi-box-arrow-right"></i> Salir</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container carrito-container">
+    <h2 class="mb-4">🛒 Tu carrito de compras</h2>
+
+    {% if carrito %}
+    <div class="row">
+      <!-- Lista de productos -->
+      <div class="col-md-8">
+        {% for item in carrito %}
+        <div class="carrito-item d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <img src="{{ item.img }}" class="producto-imagen me-3" alt="{{ item.name }}">
+            <div>
+              <h5 class="mb-1">{{ item.name }}</h5>
+              <div class="precio-actual">${{ item.price }}</div>
+              <p class="mb-1 text-muted">Cantidad: {{ item.cantidad }}</p>
+              <form action="{{ url_for('eliminar_carrito', producto_id=item._id) }}" method="POST">
+                <button class="btn btn-link text-danger p-0"><i class="bi bi-trash"></i> Eliminar</button>
+              </form>
+            </div>
+          </div>
+          <strong>${{ item.price * item.cantidad }}</strong>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Resumen de compra -->
+      <div class="col-md-4">
+        <div class="resumen">
+          <h5 class="mb-3">Resumen de compra</h5>
+          <p>Subtotal: <strong>${{ total }}</strong></p>
+          <form action="{{ url_for('vaciar_carrito') }}" method="POST" class="d-inline">
+            <button class="btn btn-outline-danger w-100 mt-2"><i class="bi bi-x-circle"></i> Vaciar carrito</button>
+          </form>
+          <a href="{{ url_for('inicio') }}" class="btn btn-outline-secondary w-100 mt-2"><i class="bi bi-arrow-left-circle"></i> Seguir comprando</a>
+          <button class="btn btn-walmart w-100 mt-3" id="btn-pagar"><i class="bi bi-credit-card"></i> Finalizar compra</button>
+
+          <!-- FORMULARIO DE PAGO -->
+          <div class="formulario-pago" id="formulario-pago">
+            <h5 class="text-center mb-3">💳 Pago con tarjeta</h5>
+            <form id="payment-form" onsubmit="procesarPago(event)">
+              <div class="mb-3">
+                <label>Nombre en la tarjeta</label>
+                <input type="text" class="form-control tarjeta-input" id="nombre" placeholder="Ej. Juan Pérez" required>
+              </div>
+              <div class="mb-3">
+                <label>Número de tarjeta</label>
+                <input type="text" maxlength="16" class="form-control tarjeta-input" id="tarjeta" placeholder="•••• •••• •••• ••••" required>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label>Fecha de vencimiento</label>
+                  <input type="text" class="form-control tarjeta-input" id="vencimiento" placeholder="MM/AA" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>CVV</label>
+                  <input type="password" maxlength="3" class="form-control tarjeta-input" id="cvv" placeholder="***" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success w-100 mt-3"><i class="bi bi-bag-check"></i> Pagar ahora</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="alert alert-info text-center mt-5">
+      🛍️ Tu carrito está vacío.
+      <br><a href="{{ url_for('inicio') }}" class="btn btn-primary mt-3"><i class="bi bi-shop"></i> Ver productos</a>
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const btnPagar = document.getElementById("btn-pagar");
+    const formPago = document.getElementById("formulario-pago");
+
+    btnPagar?.addEventListener("click", () => {
+      formPago.style.display = formPago.style.display === "block" ? "none" : "block";
+      btnPagar.style.display = "none";
+    });
+
+    function procesarPago(event) {
+      event.preventDefault();
+      const nombre = document.getElementById("nombre").value.trim();
+      const tarjeta = document.getElementById("tarjeta").value.trim();
+      const vencimiento = document.getElementById("vencimiento").value.trim();
+      const cvv = document.getElementById("cvv").value.trim();
+
+      if (!nombre || !tarjeta || !vencimiento || !cvv) {
+        alert("Por favor completa todos los campos de pago.");
+        return;
+      }
+
+      alert("✅ Pago exitoso. ¡Gracias por tu compra en Walmart!");
+      window.location.href = "{{ url_for('inicio') }}";
+    }
+  </script>
+
+</body>
+</html>
