@@ -8,7 +8,7 @@ app.secret_key = "clave_super_secreta"
 
 
 # ------------------ CONEXIÓN A MONGODB ------------------
-client = MongoClient("mongodb+srv://walmart:123456789@cluster0.eqregid.mongodb.net/walmart")
+client = MongoClient("mongodb+srv://walmart:go2675566a@cluster0.eqregid.mongodb.net/walmart")
 db = client["walmart"]
 usuarios = db["usuarios"]
 productos = db["productos"]
