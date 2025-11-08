@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago - Walmart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: #0071ce;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #005fa3;
+        }
+
+        .total {
+            font-size: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Pagar pedido</h2>
+
+    <p class="total">Total a pagar: <strong>${{ total }}</strong></p>
+
+    <form action="/pago" method="POST">
+
+        <label>Nombre en la tarjeta:</label>
+        <input type="text" name="nombre" required>
+
+        <label>Número de tarjeta:</label>
+        <input type="text" name="tarjeta" maxlength="16" required>
+
+        <label>CVV:</label>
+        <input type="password" name="cvv" maxlength="3" required>
+
+        <label>Fecha de expiración:</label>
+        <input type="month" name="fecha" required>
+
+        <button type="submit">Confirmar pago</button>
+    </form>
+</div>
+
+</body>
+</html>
