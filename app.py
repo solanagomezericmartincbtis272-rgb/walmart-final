@@ -5,6 +5,9 @@ from bson import ObjectId
 app = Flask(__name__)
 app.secret_key = "clave_super_secreta"
 
+app = Flask(__name__, template_folder="walmart_flask_app/templates", static_folder="walmart_flask_app/static")
+
+
 # ------------------ CONEXIÓN A MONGODB ------------------
 client = MongoClient("mongodb+srv://walmart:123456789@cluster0.eqregid.mongodb.net/walmart")
 db = client["walmart"]
