@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash 
 from pymongo import MongoClient
 from bson import ObjectId
+from datetime import datetime
 
 app = Flask(__name__, template_folder='flask_mongo_crud_alumnos/templates')
 app.secret_key = "clave_super_secreta"
-
-
 
 # ------------------ CONEXIÓN A MONGODB ------------------
 client = MongoClient("mongodb+srv://walmart:go2675566a@cluster0.eqregid.mongodb.net/walmart")
 db = client["walmart"]
 usuarios = db["usuarios"]
 productos = db["productos"]
+pagos = db["pagos"]        # ✅ Nueva colección para guardar pagos
 
 # ---------------------------------------------------------
 # LOGIN
@@ -27,7 +27,7 @@ def login():
         if user:
             if user["contrasena"] == contrasena:
                 session["usuario"] = usuario
-                session["carrito"] = []  # inicializar carrito vacío
+                session["carrito"] = []
                 return redirect(url_for("inicio"))
             else:
                 mensaje = "⚠️ Contraseña incorrecta"
@@ -37,8 +37,7 @@ def login():
     return render_template("login.html", mensaje=mensaje)
 
 # ---------------------------------------------------------
-# ---------------------------------------------------------
-# REGISTRO DE USUARIOS
+# REGISTRO
 # ---------------------------------------------------------
 @app.route("/registro", methods=["GET", "POST"])
 def registro():
@@ -59,14 +58,12 @@ def registro():
                 "usuario": usuario,
                 "contrasena": contrasena
             })
-            mensaje = "✅ Registro exitoso. Ahora puedes iniciar sesión."
             return redirect(url_for("login"))
 
     return render_template("registro.html", mensaje=mensaje)
 
-
 # ---------------------------------------------------------
-# INICIO (LISTA DE PRODUCTOS)
+# INICIO - LISTA DE PRODUCTOS
 # ---------------------------------------------------------
 @app.route("/inicio")
 def inicio():
@@ -74,10 +71,6 @@ def inicio():
         return redirect(url_for("login"))
 
     productos_list = list(productos.find())
-
-    if not productos_list:
-        flash("No hay productos en la base de datos aún.", "info")
-
     return render_template("inicio.html", productos=productos_list, usuario=session["usuario"])
 
 # ---------------------------------------------------------
@@ -89,12 +82,7 @@ def producto_detalle(producto_id):
         return redirect(url_for("login"))
 
     producto = productos.find_one({"_id": ObjectId(producto_id)})
-
-    if not producto:
-        return "Producto no encontrado", 404
-
     return render_template("producto.html", producto=producto, usuario=session["usuario"])
-
 
 # ---------------------------------------------------------
 # AGREGAR AL CARRITO
@@ -105,10 +93,6 @@ def agregar_carrito(producto_id):
         return redirect(url_for("login"))
 
     producto = productos.find_one({"_id": ObjectId(producto_id)})
-    if not producto:
-        flash("Producto no encontrado.", "danger")
-        return redirect(url_for("inicio"))
-
     carrito = session.get("carrito", [])
 
     for item in carrito:
@@ -120,25 +104,21 @@ def agregar_carrito(producto_id):
             "_id": str(producto["_id"]),
             "name": producto["name"],
             "price": producto["price"],
-            "img": producto.get("img", "https://via.placeholder.com/200"),
+            "img": producto.get("img", ""),
             "cantidad": 1
         })
 
     session["carrito"] = carrito
-    flash(f"✅ {producto['name']} agregado al carrito.", "success")
-    return redirect(url_for("carrito"))  # ✅ redirige directamente al carrito
+    return redirect(url_for("carrito"))
 
 # ---------------------------------------------------------
-# VER CARRITO
+# CARRITO
 # ---------------------------------------------------------
 @app.route("/carrito")
 def carrito():
-    if "usuario" not in session:
-        return redirect(url_for("login"))
-
     carrito = session.get("carrito", [])
     total = sum(item["price"] * item["cantidad"] for item in carrito)
-    return render_template("carrito.html", carrito=carrito, total=total, usuario=session["usuario"])
+    return render_template("carrito.html", carrito=carrito, total=total, usuario=session.get("usuario"))
 
 # ---------------------------------------------------------
 # ELIMINAR PRODUCTO DEL CARRITO
@@ -148,7 +128,6 @@ def eliminar_carrito(producto_id):
     carrito = session.get("carrito", [])
     carrito = [item for item in carrito if item["_id"] != producto_id]
     session["carrito"] = carrito
-    flash("🗑️ Producto eliminado del carrito.", "warning")
     return redirect(url_for("carrito"))
 
 # ---------------------------------------------------------
@@ -157,8 +136,42 @@ def eliminar_carrito(producto_id):
 @app.route("/vaciar_carrito", methods=["POST"])
 def vaciar_carrito():
     session["carrito"] = []
-    flash("🛒 Carrito vaciado correctamente.", "info")
     return redirect(url_for("carrito"))
+
+# ---------------------------------------------------------
+# ✅ PAGO (Guarda en MongoDB colección pagos)
+# ---------------------------------------------------------
+@app.route("/pago", methods=["GET", "POST"])
+def pago():
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    carrito = session.get("carrito", [])
+    total = sum(item["price"] * item["cantidad"] for item in carrito)
+
+    if request.method == "POST":
+        nombre = request.form["nombre"]
+        tarjeta = request.form["tarjeta"]
+        cvv = request.form["cvv"]
+        fecha = request.form["fecha"]
+
+        # ✅ Guardar en la colección "pagos"
+        pagos.insert_one({
+            "usuario": session["usuario"],
+            "carrito": carrito,
+            "total": total,
+            "nombre_tarjeta": nombre,
+            "numero_tarjeta": tarjeta,
+            "cvv": cvv,
+            "fecha_exp": fecha,
+            "fecha_compra": datetime.now()
+        })
+
+        session["carrito"] = []  # Vaciar carrito después del pago
+
+        return render_template("pago_exitoso.html", total=total)
+
+    return render_template("pago.html", carrito=carrito, total=total)
 
 # ---------------------------------------------------------
 # LOGOUT
@@ -166,7 +179,6 @@ def vaciar_carrito():
 @app.route("/logout")
 def logout():
     session.clear()
-    flash("👋 Sesión cerrada correctamente.", "info")
     return redirect(url_for("login"))
 
 # ---------------------------------------------------------
@@ -174,3 +186,4 @@ def logout():
 # ---------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
