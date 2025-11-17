@@ -109,17 +109,18 @@
   </nav>
 
   <!-- Barra de categorías -->
-  <div class="categories-bar">
-    <a href="#" onclick="filterByCategory('super')"><i class="bi bi-basket"></i> Super</a>
-    <a href="#" onclick="filterByCategory('tecnologia')"><i class="bi bi-pc-display"></i> Tecnología</a>
-    <a href="#" onclick="filterByCategory('moda')"><i class="bi bi-bag"></i> Moda</a>
-    <a href="#" onclick="filterByCategory('juguetes')"><i class="bi bi-controller"></i> Juguetes</a>
-    <a href="#" onclick="filterByCategory('hogar')"><i class="bi bi-house-door"></i> Hogar</a>
-    <a href="#" onclick="filterByCategory('alimentos')"><i class="bi bi-cup-hot"></i> Alimentos</a>
-    <a href="#" onclick="filterByCategory('ferreteria')"><i class="bi bi-tools"></i> Ferretería</a>
-    <a href="#" onclick="filterByCategory('salud')"><i class="bi bi-heart-pulse"></i> Salud</a>
-    <a href="#" onclick="filterByCategory('electronica')"><i class="bi bi-tv"></i> Electrónica</a>
-  </div>
+<div class="categories-bar">
+  <a href="{{ url_for('categoria', category='super') }}"><i class="bi bi-basket"></i> Super</a>
+  <a href="{{ url_for('categoria', category='tecnologia') }}"><i class="bi bi-pc-display"></i> Tecnología</a>
+  <a href="{{ url_for('categoria', category='moda') }}"><i class="bi bi-bag"></i> Moda</a>
+  <a href="{{ url_for('categoria', category='juguetes') }}"><i class="bi bi-controller"></i> Juguetes</a>
+  <a href="{{ url_for('categoria', category='hogar') }}"><i class="bi bi-house-door"></i> Hogar</a>
+  <a href="{{ url_for('categoria', category='alimentos') }}"><i class="bi bi-cup-hot"></i> Alimentos</a>
+  <a href="{{ url_for('categoria', category='ferreteria') }}"><i class="bi bi-tools"></i> Ferretería</a>
+  <a href="{{ url_for('categoria', category='salud') }}"><i class="bi bi-heart-pulse"></i> Salud</a>
+  <a href="{{ url_for('categoria', category='electronica') }}"><i class="bi bi-tv"></i> Electrónica</a>
+</div>
+
 
   <!-- PRODUCTOS -->
   <div class="container mt-4">
@@ -154,3 +155,4 @@
 
 </body>
 </html>
+
