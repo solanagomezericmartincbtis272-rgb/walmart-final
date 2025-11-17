@@ -129,7 +129,7 @@ def producto_detalle(producto_id):
 # ---------------------------------------------------------
 @app.route("/agregar_carrito/<producto_id>", methods=["POST"])
 def agregar_carrito(producto_id):
-    if "usuario" not in session":
+    if "usuario" not in session:
         return redirect(url_for("login"))
 
     producto = productos.find_one({"_id": ObjectId(producto_id)})
