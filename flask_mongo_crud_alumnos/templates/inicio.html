@@ -1,156 +1,89 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Walmart</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #f5f6f7;
-    }
-    .navbar {
-      background-color: #0071ce;
-    }
-    .navbar-brand {
-      font-weight: bold;
-      color: white !important;
-      font-size: 1.5rem;
-    }
-    .nav-link, .navbar-text {
-      color: white !important;
-    }
-    .categories-bar {
-      background-color: #005fa3;
-      color: white;
-      padding: 10px 0;
-      text-align: center;
-    }
-    .categories-bar a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .categories-bar a:hover {
-      text-decoration: underline;
-    }
-    .card {
-      border: none;
-      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 15px;
-      transition: transform 0.2s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .card img {
-      height: 200px;
-      object-fit: contain;
-      padding: 15px;
-    }
-    .price {
-      color: #0071ce;
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    .old-price {
-      text-decoration: line-through;
-      color: #999;
-      font-size: 0.9rem;
-    }
-    .ahorro {
-      color: green;
-      font-size: 0.9rem;
-    }
-    .btn-agregar {
-      background-color: #0071ce;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-agregar:hover {
-      background-color: #005fa3;
-      transform: scale(1.03);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walmart - Inicio</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
 </head>
-<body>
+<body style="background:#f4f6f8;">
 
-  <!-- Navbar principal -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">Walmart</a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
 
-      <!-- ✅ FORMULARIO DE BÚSQUEDA CORREGIDO -->
-      <form class="d-flex mx-auto" style="width: 50%;" id="search-form" 
-            action="{{ url_for('buscar') }}" method="GET">
+    <a class="navbar-brand fw-bold" href="#">Walmart</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <!-- BUSCADOR -->
+      <form class="d-flex mx-auto" style="width: 50%;" id="search-form" action="{{ url_for('buscar') }}" method="GET">
         <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." required>
         <button class="btn btn-light" type="submit">
           <i class="bi bi-search text-primary"></i>
         </button>
       </form>
 
-      <div class="d-flex align-items-center text-white gap-4">
-        <div>
-          <i class="bi bi-person-circle"></i> {{ usuario }}
-        </div>
-        <div>
-          <a href="{{ url_for('carrito') }}" style="color: white; text-decoration: none;">
-            <i class="bi bi-cart3"></i> 
-            <span class="d-none d-md-inline">Ver carrito</span>
-          </a>
-        </div>
-        <div>
-          <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
-            <i class="bi bi-box-arrow-right"></i> Salir
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+      <!-- BOTÓN CERRAR SESIÓN -->
+      <a href="{{ url_for('logout') }}" class="btn btn-light">
+        <i class="bi bi-box-arrow-right text-primary"></i> Salir
+      </a>
 
-  <!-- Barra de categorías -->
-<div class="categories-bar">
-  <a href="{{ url_for('categoria', category='super') }}"><i class="bi bi-basket"></i> Super</a>
-  <a href="{{ url_for('categoria', category='tecnologia') }}"><i class="bi bi-pc-display"></i> Tecnología</a>
-  <a href="{{ url_for('categoria', category='moda') }}"><i class="bi bi-bag"></i> Moda</a>
-  <a href="{{ url_for('categoria', category='juguetes') }}"><i class="bi bi-controller"></i> Juguetes</a>
-  <a href="{{ url_for('categoria', category='hogar') }}"><i class="bi bi-house-door"></i> Hogar</a>
-  <a href="{{ url_for('categoria', category='alimentos') }}"><i class="bi bi-cup-hot"></i> Alimentos</a>
-  <a href="{{ url_for('categoria', category='ferreteria') }}"><i class="bi bi-tools"></i> Ferretería</a>
-  <a href="{{ url_for('categoria', category='salud') }}"><i class="bi bi-heart-pulse"></i> Salud</a>
-  <a href="{{ url_for('categoria', category='electronica') }}"><i class="bi bi-tv"></i> Electrónica</a>
-</div>
-
-  <!-- PRODUCTOS -->
-  <div class="container mt-4">
-    <div class="row">
-      {% for producto in productos %}
-      <div class="col-md-3 mb-4">
-        <div class="card text-center">
-          <img src="{{ producto['img'] }}" alt="{{ producto['name'] }}">
-          <div class="card-body">
-            <h6>{{ producto['name'] }}</h6>
-            <div class="price">${{ producto['price'] }}.00</div>
-            <div class="old-price">${{ producto['oldPrice'] }}.00</div>
-            <div class="ahorro">Ahorras ${{ producto['oldPrice'] - producto['price'] }}.00</div>
-
-            <!-- Agregar al carrito -->
-            <form action="{{ url_for('agregar_carrito', producto_id=producto['_id']) }}" method="POST">
-              <button class="btn btn-agregar mt-2">+ Agregar al carrito</button>
-            </form>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
     </div>
   </div>
+</nav>
 
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Productos Disponibles</h2>
+
+    <div class="row">
+
+        {% for producto in productos %}
+        <div class="col-md-4 mb-4">
+
+            <!-- ⭐ TARJETA DEL PRODUCTO CON LINK AL DETALLE -->
+            <a href="{{ url_for('producto_detalle', producto_id=producto['_id']) }}" style="text-decoration:none; color: inherit;">
+                <div class="card text-center shadow-sm" style="cursor:pointer;">
+
+                    <img src="{{ producto['image'] }}" class="card-img-top" style="height: 220px; object-fit: cover;">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ producto['name'] }}</h5>
+                        <p class="card-text text-success fw-bold">$ {{ producto['price'] }}</p>
+
+                        <!-- ⭐ RATING SI EXISTE -->
+                        {% if producto.get('rating') %}
+                        <p class="text-warning">
+                            {% for i in range(producto['rating']) %}
+                                ★
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </a>
+
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+
 
