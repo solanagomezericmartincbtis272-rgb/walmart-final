@@ -74,6 +74,26 @@ def inicio():
     return render_template("inicio.html", productos=productos_list, usuario=session["usuario"])
 
 # ---------------------------------------------------------
+# FILTRO POR CATEGORÍA
+# ---------------------------------------------------------
+@app.route("/categoria/<category>")
+def categoria(category):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    # Buscar solo los productos con esa categoría
+    productos_list = list(productos.find({"category": category}))
+
+    if not productos_list:
+        flash("No hay productos en esta categoría aún.")
+
+    return render_template("inicio.html",
+                           productos=productos_list,
+                           usuario=session["usuario"],
+                           categoria=category)
+
+
+# ---------------------------------------------------------
 # DETALLE DE PRODUCTO
 # ---------------------------------------------------------
 @app.route("/producto/<producto_id>")
