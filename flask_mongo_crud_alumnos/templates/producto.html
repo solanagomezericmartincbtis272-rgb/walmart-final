@@ -38,21 +38,36 @@
 
       <!-- Miniaturas -->
       <div class="row mt-3">
-        {% for imagen in producto.images %}
-        <div class="col-4">
-          <img onclick="cambiarImagen('{{ imagen }}')" src="{{ imagen }}" class="thumb-img">
-        </div>
-        {% endfor %}
+        {% if producto.images %}
+          {% for imagen in producto.images %}
+          <div class="col-4">
+            <img onclick="cambiarImagen('{{ imagen }}')" src="{{ imagen }}" class="thumb-img">
+          </div>
+          {% endfor %}
+        {% endif %}
       </div>
     </div>
 
     <!-- Información -->
     <div class="col-md-6">
+      
       <h2>{{ producto.name }}</h2>
+
+      <!-- Marca -->
+      {% if producto.brand %}
+      <p class="text-muted">
+        Marca: <strong>{{ producto.brand }}</strong>
+      </p>
+      {% endif %}
+
+      <!-- Categoría -->
+      {% if producto.category %}
+      <p class="text-muted">Categoría: <strong>{{ producto.category }}</strong></p>
+      {% endif %}
 
       <!-- Estrellas -->
       <div class="text-warning fs-4">
-        {% for i in range(1, 5+1) %}
+        {% for i in range(1, 6) %}
           {% if producto.rating >= i %}
             <i class="bi bi-star-fill"></i>
           {% elif producto.rating >= i - 0.5 %}
@@ -64,15 +79,55 @@
         <span class="text-dark fs-6">({{ producto.rating }})</span>
       </div>
 
+      <!-- Precios -->
       <h3 class="text-primary mt-2">${{ producto.price }}.00</h3>
-      <p class="text-decoration-line-through text-muted">${{ producto.oldPrice }}.00</p>
-      <p>Ahorro: <b>${{ producto.oldPrice - producto.price }}.00</b></p>
 
+      {% if producto.oldPrice %}
+      <p class="text-decoration-line-through text-muted">
+        ${{ producto.oldPrice }}.00
+      </p>
+      <p>
+        Ahorro: <b>${{ producto.oldPrice - producto.price }}.00</b>
+      </p>
+      {% endif %}
+
+      <!-- Descripción -->
+      {% if producto.description %}
       <p class="mt-3">{{ producto.description }}</p>
+      {% endif %}
 
+      <!-- Lista de detalles -->
+      {% if producto.details %}
+      <h5 class="mt-4">Detalles del producto:</h5>
+      <ul>
+        {% for d in producto.details %}
+        <li>{{ d }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <!-- Vendedor -->
+      {% if producto.seller %}
+      <p class="mt-3"><strong>Vendido por:</strong> {{ producto.seller }}</p>
+      {% endif %}
+
+      <!-- Política de devolución -->
+      {% if producto.returnPolicy %}
+      <p><strong>Política de devolución:</strong> {{ producto.returnPolicy }}</p>
+      {% endif %}
+
+      <!-- Mensualidades -->
+      {% if producto.monthlyPayments %}
+      <p class="text-info mt-3">
+        <i class="bi bi-credit-card"></i> {{ producto.monthlyPayments }}
+      </p>
+      {% endif %}
+
+      <!-- Botón agregar al carrito -->
       <form action="{{ url_for('agregar_carrito', producto_id=producto['_id']) }}" method="POST">
         <button class="btn btn-primary btn-lg mt-3">Agregar al carrito</button>
       </form>
+
     </div>
 
   </div>
@@ -80,5 +135,7 @@
 
 </body>
 </html>
+
+
 
 
