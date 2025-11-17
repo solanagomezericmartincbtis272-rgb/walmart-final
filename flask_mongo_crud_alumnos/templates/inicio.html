@@ -66,21 +66,7 @@
       color: green;
       font-size: 0.9rem;
     }
-    .btn-agregar {
-      background-color: #0071ce;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .btn-agregar:hover {
-      background-color: #005fa3;
-      transform: scale(1.03);
-    }
 
-    /* Hacer que el link no cambie el estilo */
     .link-producto {
       text-decoration: none;
       color: inherit;
@@ -92,13 +78,15 @@
   <!-- Navbar principal -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
+
+      <!-- LOGO CORRECTO -->
       <a class="navbar-brand d-flex align-items-center" href="/">
-  <img src="/static/img/walmart_logo.png" 
-       alt="Walmart" 
-       style="height: 40px; margin-right: 10px;">
-</a>
+        <img src="{{ url_for('static', filename='img/walmart_logo.png') }}" 
+             alt="Walmart Logo" 
+             style="height: 40px; margin-right: 10px;">
+      </a>
 
-
+      <!-- Buscador -->
       <form class="d-flex mx-auto" style="width: 50%;" id="search-form" 
             action="{{ url_for('buscar') }}" method="GET">
         <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." required>
@@ -107,6 +95,7 @@
         </button>
       </form>
 
+      <!-- Usuario / Carrito / Logout -->
       <div class="d-flex align-items-center text-white gap-4">
         <div>
           <i class="bi bi-person-circle"></i> {{ usuario }}
@@ -139,15 +128,13 @@
     <a href="{{ url_for('categoria', category='electronica') }}"><i class="bi bi-tv"></i> Electrónica</a>
   </div>
 
-  <!-- PRODUCTOS -->
+  <!-- LISTA DE PRODUCTOS -->
   <div class="container mt-4">
     <div class="row">
       {% for producto in productos %}
       <div class="col-md-3 mb-4">
 
-        <!-- 🔗 Toda la tarjeta es clickeable -->
         <a class="link-producto" href="{{ url_for('producto_detalle', producto_id=producto['_id']) }}">
-
           <div class="card text-center">
             <img src="{{ producto['img'] }}" alt="{{ producto['name'] }}">
             <div class="card-body">
@@ -157,7 +144,6 @@
               <div class="ahorro">Ahorras ${{ producto['oldPrice'] - producto['price'] }}.00</div>
             </div>
           </div>
-
         </a>
 
       </div>
@@ -167,6 +153,8 @@
 
 </body>
 </html>
+
+
 
 
 
