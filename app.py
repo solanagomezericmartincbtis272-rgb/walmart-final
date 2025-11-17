@@ -11,7 +11,7 @@ client = MongoClient("mongodb+srv://walmart:go2675566a@cluster0.eqregid.mongodb.
 db = client["walmart"]
 usuarios = db["usuarios"]
 productos = db["productos"]
-pagos = db["pagos"]        # ✅ Nueva colección para guardar pagos
+pagos = db["pagos"]
 
 # ---------------------------------------------------------
 # LOGIN
@@ -74,6 +74,28 @@ def inicio():
     return render_template("inicio.html", productos=productos_list, usuario=session["usuario"])
 
 # ---------------------------------------------------------
+# BUSCADOR
+# ---------------------------------------------------------
+@app.route("/buscar")
+def buscar():
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    q = request.args.get("q", "").strip()
+
+    productos_list = list(productos.find({
+        "name": {"$regex": q, "$options": "i"}
+    }))
+
+    if not productos_list:
+        flash("No se encontraron productos para tu búsqueda.")
+
+    return render_template("inicio.html",
+                           productos=productos_list,
+                           usuario=session["usuario"],
+                           busqueda=q)
+
+# ---------------------------------------------------------
 # FILTRO POR CATEGORÍA
 # ---------------------------------------------------------
 @app.route("/categoria/<category>")
@@ -81,7 +103,6 @@ def categoria(category):
     if "usuario" not in session:
         return redirect(url_for("login"))
 
-    # Buscar solo los productos con esa categoría
     productos_list = list(productos.find({"category": category}))
 
     if not productos_list:
@@ -91,7 +112,6 @@ def categoria(category):
                            productos=productos_list,
                            usuario=session["usuario"],
                            categoria=category)
-
 
 # ---------------------------------------------------------
 # DETALLE DE PRODUCTO
@@ -109,7 +129,7 @@ def producto_detalle(producto_id):
 # ---------------------------------------------------------
 @app.route("/agregar_carrito/<producto_id>", methods=["POST"])
 def agregar_carrito(producto_id):
-    if "usuario" not in session:
+    if "usuario" not in session":
         return redirect(url_for("login"))
 
     producto = productos.find_one({"_id": ObjectId(producto_id)})
@@ -159,7 +179,7 @@ def vaciar_carrito():
     return redirect(url_for("carrito"))
 
 # ---------------------------------------------------------
-# ✅ PAGO (Guarda en MongoDB colección pagos)
+# PAGO
 # ---------------------------------------------------------
 @app.route("/pago", methods=["GET", "POST"])
 def pago():
@@ -175,7 +195,6 @@ def pago():
         cvv = request.form["cvv"]
         fecha = request.form["fecha"]
 
-        # ✅ Guardar en la colección "pagos"
         pagos.insert_one({
             "usuario": session["usuario"],
             "carrito": carrito,
@@ -187,7 +206,7 @@ def pago():
             "fecha_compra": datetime.now()
         })
 
-        session["carrito"] = []  # Vaciar carrito después del pago
+        session["carrito"] = []
 
         return render_template("pago_exitoso.html", total=total)
 
@@ -206,4 +225,3 @@ def logout():
 # ---------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
-
