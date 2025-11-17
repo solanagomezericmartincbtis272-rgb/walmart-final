@@ -85,10 +85,16 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">Walmart</a>
-      <form class="d-flex mx-auto" style="width: 50%;" id="search-form">
-        <input class="form-control me-2" type="search" placeholder="Buscar productos..." id="search-input">
-        <button class="btn btn-light" type="submit"><i class="bi bi-search text-primary"></i></button>
+
+      <!-- ✅ FORMULARIO DE BÚSQUEDA CORREGIDO -->
+      <form class="d-flex mx-auto" style="width: 50%;" id="search-form" 
+            action="{{ url_for('buscar') }}" method="GET">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." required>
+        <button class="btn btn-light" type="submit">
+          <i class="bi bi-search text-primary"></i>
+        </button>
       </form>
+
       <div class="d-flex align-items-center text-white gap-4">
         <div>
           <i class="bi bi-person-circle"></i> {{ usuario }}
@@ -121,7 +127,6 @@
   <a href="{{ url_for('categoria', category='electronica') }}"><i class="bi bi-tv"></i> Electrónica</a>
 </div>
 
-
   <!-- PRODUCTOS -->
   <div class="container mt-4">
     <div class="row">
@@ -135,7 +140,7 @@
             <div class="old-price">${{ producto['oldPrice'] }}.00</div>
             <div class="ahorro">Ahorras ${{ producto['oldPrice'] - producto['price'] }}.00</div>
 
-            <!-- ✅ Agrega al carrito y redirige directamente -->
+            <!-- Agregar al carrito -->
             <form action="{{ url_for('agregar_carrito', producto_id=producto['_id']) }}" method="POST">
               <button class="btn btn-agregar mt-2">+ Agregar al carrito</button>
             </form>
@@ -145,13 +150,6 @@
       {% endfor %}
     </div>
   </div>
-
-  <script>
-    // Pequeño filtro local de categorías (opcional)
-    function filterByCategory(category) {
-      alert('Filtrando categoría: ' + category);
-    }
-  </script>
 
 </body>
 </html>
