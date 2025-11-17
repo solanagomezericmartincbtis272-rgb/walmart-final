@@ -161,6 +161,25 @@ def carrito():
     return render_template("carrito.html", carrito=carrito, total=total, usuario=session.get("usuario"))
 
 # ---------------------------------------------------------
+# ACTUALIZAR CANTIDAD DEL CARRITO
+# ---------------------------------------------------------
+@app.route("/actualizar_cantidad/<producto_id>", methods=["POST"])
+def actualizar_cantidad(producto_id):
+    if "usuario" not in session:
+        return redirect(url_for("login"))
+
+    nueva_cantidad = int(request.form["cantidad"])
+    carrito = session.get("carrito", [])
+
+    for item in carrito:
+        if item["_id"] == producto_id:
+            item["cantidad"] = max(1, nueva_cantidad)
+            break
+
+    session["carrito"] = carrito
+    return redirect(url_for("carrito"))
+
+# ---------------------------------------------------------
 # ELIMINAR PRODUCTO DEL CARRITO
 # ---------------------------------------------------------
 @app.route("/eliminar_carrito/<producto_id>", methods=["POST"])
@@ -225,3 +244,4 @@ def logout():
 # ---------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True)
+
