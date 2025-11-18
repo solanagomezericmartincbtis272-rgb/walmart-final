@@ -2,45 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito | Walmart</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    :root {
-      --walmart-blue: #0071ce;
-      --walmart-yellow: #ffc220;
-      --light-gray: #f8f9fa;
-      --dark-gray: #343a40;
-      --success-color: #28a745;
-    }
-    
-    body { 
-      background-color: var(--light-gray); 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-      padding-bottom: 2rem;
-    }
+    body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
 
-    .navbar { 
-      background-color: var(--walmart-blue); 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .navbar-brand { 
-      color: white !important; 
-      font-weight: bold; 
-      font-size: 1.5rem;
-    }
-    
-    .navbar-brand::before {
-      content: "🏪 ";
-    }
+    .navbar { background-color: #0071ce; }
+    .navbar-brand { color: white !important; font-weight: bold; }
 
-    .carrito-container { 
-      max-width: 1200px; 
-      margin: 40px auto; 
-    }
+    .carrito-container { max-width: 1200px; margin: 40px auto; }
 
     .carrito-item {
       background-color: white;
@@ -49,13 +21,6 @@
       box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
       margin-bottom: 15px;
       transition: 0.2s;
-      border-left: 4px solid var(--walmart-blue);
-      position: relative;
-    }
-    
-    .carrito-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
     }
 
     .producto-imagen {
@@ -65,176 +30,16 @@
       border-radius: 8px;
       padding: 5px;
       border: 1px solid #eee;
-      background-color: white;
-    }
-    
-    .producto-imagen:hover {
-      transform: scale(1.05);
-      transition: transform 0.2s;
     }
 
-    .precio-actual { 
-      color: var(--walmart-blue); 
-      font-weight: bold; 
-      font-size: 1.3rem; 
-    }
-    
-    .precio-original {
-      color: #6c757d;
-      text-decoration: line-through;
-      font-size: 0.9rem;
-    }
-    
-    .descuento-badge {
-      background-color: var(--success-color);
-      color: white;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      margin-left: 5px;
-    }
+    .precio-actual { color: #0071ce; font-weight: bold; font-size: 1.3rem; }
 
-    .btn-walmart { 
-      background-color: var(--walmart-blue); 
-      color: white; 
-      border-radius: 8px; 
-      font-weight: 600;
-      padding: 10px 20px;
-      transition: all 0.2s;
-    }
-    
-    .btn-walmart:hover { 
-      background-color: #005aa3; 
-      color: white;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn-walmart-yellow {
-      background-color: var(--walmart-yellow);
-      color: var(--dark-gray);
-      border-radius: 8px;
-      font-weight: 600;
-      padding: 10px 20px;
-      transition: all 0.2s;
-    }
-    
-    .btn-walmart-yellow:hover {
-      background-color: #e6ac00;
-      color: var(--dark-gray);
-      transform: translateY(-1px);
-    }
+    .btn-walmart { background-color: #0071ce; color: white; border-radius: 8px; }
+    .btn-walmart:hover { background-color: #005aa3; color: white; }
 
     .cantidad-input {
       width: 70px;
       text-align: center;
-      border: 1px solid #ced4da;
-      border-radius: 4px;
-      padding: 5px;
-    }
-    
-    .cantidad-input:focus {
-      border-color: var(--walmart-blue);
-      box-shadow: 0 0 0 0.2rem rgba(0, 113, 206, 0.25);
-    }
-    
-    .resumen {
-      position: sticky;
-      top: 20px;
-    }
-    
-    .resumen h5 {
-      color: var(--walmart-blue);
-      border-bottom: 2px solid var(--walmart-yellow);
-      padding-bottom: 10px;
-    }
-    
-    .cupon-input {
-      border-top-right-radius: 0;
-      border-bottom-right-radius: 0;
-    }
-    
-    .cupon-btn {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-    
-    .envio-gratis {
-      color: var(--success-color);
-      font-weight: 600;
-    }
-    
-    .producto-stock {
-      color: var(--success-color);
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
-    
-    .producto-agotado {
-      color: #dc3545;
-      font-size: 0.9rem;
-      margin-top: 5px;
-    }
-    
-    .sugerencias {
-      margin-top: 30px;
-    }
-    
-    .sugerencia-card {
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.2s;
-      height: 100%;
-    }
-    
-    .sugerencia-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .sugerencia-img {
-      height: 120px;
-      object-fit: contain;
-      padding: 10px;
-    }
-    
-    .badge-nuevo {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: var(--walmart-yellow);
-      color: var(--dark-gray);
-    }
-    
-    .progress-bar-custom {
-      background-color: var(--walmart-blue);
-    }
-    
-    .empty-cart-icon {
-      font-size: 4rem;
-      color: #6c757d;
-      margin-bottom: 1rem;
-    }
-    
-    .carrito-vacio {
-      padding: 3rem 1rem;
-    }
-    
-    @media (max-width: 768px) {
-      .carrito-item {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      .carrito-item > div:last-child {
-        margin-top: 15px;
-        align-self: flex-end;
-      }
-      
-      .producto-imagen {
-        width: 80px;
-        height: 80px;
-      }
     }
   </style>
 </head>
@@ -245,83 +50,44 @@
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="{{ url_for('inicio') }}">Walmart</a>
-      <div class="ms-auto text-white d-flex align-items-center">
-        <i class="bi bi-person-circle me-1"></i> {{ usuario }}
-        <a href="{{ url_for('logout') }}" class="text-white ms-3"><i class="bi bi-box-arrow-right me-1"></i> Salir</a>
+      <div class="ms-auto text-white">
+        <i class="bi bi-person-circle"></i> {{ usuario }}
+        <a href="{{ url_for('logout') }}" class="text-white ms-3"><i class="bi bi-box-arrow-right"></i> Salir</a>
       </div>
     </div>
   </nav>
 
   <div class="container carrito-container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2 class="mb-0">🛒 Tu carrito de compras</h2>
-      <span class="badge bg-primary fs-6">{{ carrito|length }} producto(s)</span>
-    </div>
+    <h2 class="mb-4">🛒 Tu carrito de compras</h2>
 
     {% if carrito %}
     <div class="row">
 
       <!-- Lista de productos -->
-      <div class="col-lg-8">
-        <!-- Barra de progreso para envío gratis -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="envio-gratis"><i class="bi bi-truck"></i> ¡Faltan ${{ 500 - total }} para envío gratis!</span>
-              <span class="text-muted">${{ total }} / $500</span>
-            </div>
-            <div class="progress" style="height: 8px;">
-              <div class="progress-bar progress-bar-custom" role="progressbar" 
-                   style="width: {{ (total / 500) * 100 }}%;" 
-                   aria-valuenow="{{ (total / 500) * 100 }}" aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div>
-        </div>
-        
+      <div class="col-md-8">
         {% for item in carrito %}
         <div class="carrito-item d-flex align-items-center justify-content-between">
 
           <div class="d-flex align-items-center">
-            <div class="position-relative">
-              <img src="{{ item.img }}" class="producto-imagen me-3" alt="{{ item.name }}">
-              {% if item.nuevo %}
-              <span class="badge badge-nuevo">Nuevo</span>
-              {% endif %}
-            </div>
+            <img src="{{ item.img }}" class="producto-imagen me-3" alt="{{ item.name }}">
 
             <div>
               <h5 class="mb-1">{{ item.name }}</h5>
-              
-              <!-- Precio y descuento -->
-              <div class="d-flex align-items-center">
-                <div class="precio-actual">${{ item.price }}</div>
-                {% if item.precio_original %}
-                <div class="precio-original ms-2">${{ item.precio_original }}</div>
-                <div class="descuento-badge">-{{ ((item.precio_original - item.price) / item.precio_original * 100)|round }}%</div>
-                {% endif %}
-              </div>
-              
-              <!-- Stock -->
-              {% if item.stock > 10 %}
-              <div class="producto-stock"><i class="bi bi-check-circle"></i> En stock</div>
-              {% elif item.stock > 0 %}
-              <div class="producto-agotado"><i class="bi bi-exclamation-triangle"></i> Solo {{ item.stock }} disponibles</div>
-              {% else %}
-              <div class="producto-agotado"><i class="bi bi-x-circle"></i> Agotado</div>
-              {% endif %}
+              <div class="precio-actual">${{ item.price }}</div>
 
               <!-- CAMBIAR CANTIDAD -->
               <form action="{{ url_for('actualizar_cantidad', producto_id=item._id) }}" method="POST" class="d-flex align-items-center mt-2">
-                <label class="me-2 fw-medium">Cantidad:</label>
+
+                <label class="me-2">Cantidad:</label>
                 <input 
                   type="number" 
                   name="cantidad" 
                   min="1"
-                  max="{{ item.stock }}"
                   value="{{ item.cantidad }}" 
                   class="form-control cantidad-input"
                   onchange="this.form.submit()"
                 >
+
               </form>
 
               <!-- ELIMINAR -->
@@ -334,78 +100,17 @@
             </div>
           </div>
 
-          <div class="text-end">
-            <strong class="fs-5">${{ item.price * item.cantidad }}</strong>
-            <div class="text-muted small">${{ item.price }} c/u</div>
-          </div>
+          <strong>${{ item.price * item.cantidad }}</strong>
         </div>
         {% endfor %}
-        
-        <!-- Sugerencias de productos -->
-        <div class="sugerencias">
-          <h4 class="mb-3">Productos que te pueden interesar</h4>
-          <div class="row">
-            {% for sugerencia in sugerencias %}
-            <div class="col-md-4 mb-3">
-              <div class="card sugerencia-card h-100">
-                <div class="position-relative">
-                  <img src="{{ sugerencia.img }}" class="card-img-top sugerencia-img" alt="{{ sugerencia.name }}">
-                  {% if sugerencia.nuevo %}
-                  <span class="badge badge-nuevo">Nuevo</span>
-                  {% endif %}
-                </div>
-                <div class="card-body d-flex flex-column">
-                  <h6 class="card-title">{{ sugerencia.name }}</h6>
-                  <div class="precio-actual mt-auto">${{ sugerencia.price }}</div>
-                  <a href="#" class="btn btn-walmart btn-sm mt-2">Añadir al carrito</a>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
       </div>
 
       <!-- Resumen -->
-      <div class="col-lg-4">
-        <div class="resumen p-4 bg-white rounded shadow-sm">
+      <div class="col-md-4">
+        <div class="resumen p-3 bg-white rounded shadow-sm">
           <h5 class="mb-3">Resumen de compra</h5>
-          
-          <div class="d-flex justify-content-between mb-2">
-            <span>Subtotal ({{ carrito|length }} productos):</span>
-            <span>${{ total }}</span>
-          </div>
-          
-          <div class="d-flex justify-content-between mb-2">
-            <span>Envío:</span>
-            {% if total >= 500 %}
-            <span class="envio-gratis">Gratis</span>
-            {% else %}
-            <span>$50</span>
-            {% endif %}
-          </div>
-          
-          <!-- Cupón de descuento -->
-          <div class="mb-3">
-            <label class="form-label">¿Tienes un cupón?</label>
-            <div class="input-group">
-              <input type="text" class="form-control cupon-input" placeholder="Código de cupón">
-              <button class="btn btn-outline-secondary cupon-btn" type="button">Aplicar</button>
-            </div>
-          </div>
-          
-          <hr>
-          
-          <div class="d-flex justify-content-between mb-3 fw-bold fs-5">
-            <span>Total:</span>
-            <span>${{ total if total >= 500 else total + 50 }}</span>
-          </div>
-          
-          {% if total < 500 %}
-          <div class="alert alert-info small">
-            <i class="bi bi-info-circle"></i> Añade ${{ 500 - total }} más a tu pedido para obtener envío gratis
-          </div>
-          {% endif %}
+
+          <p>Subtotal: <strong>${{ total }}</strong></p>
 
           <form action="{{ url_for('vaciar_carrito') }}" method="POST">
             <button class="btn btn-outline-danger w-100">
@@ -420,55 +125,21 @@
           <a href="{{ url_for('pago') }}" class="btn btn-walmart w-100 mt-3">
             <i class="bi bi-credit-card"></i> Finalizar compra
           </a>
-          
-          <div class="mt-3 text-center">
-            <img src="https://i.ibb.co/0QY8c0V/security-icons.png" alt="Métodos de pago seguros" class="img-fluid" style="max-width: 200px;">
-          </div>
         </div>
       </div>
 
     </div>
 
     {% else %}
-      <div class="text-center carrito-vacio">
-        <div class="empty-cart-icon">🛒</div>
-        <h3 class="text-muted">Tu carrito está vacío</h3>
-        <p class="text-muted mb-4">Explora nuestros productos y encuentra lo que necesitas</p>
-        <a href="{{ url_for('inicio') }}" class="btn btn-walmart btn-lg">
-          <i class="bi bi-shop"></i> Comenzar a comprar
+      <div class="alert alert-info text-center mt-5">
+        🛍️ Tu carrito está vacío.
+        <br>
+        <a href="{{ url_for('inicio') }}" class="btn btn-primary mt-3">
+          <i class="bi bi-shop"></i> Ver productos
         </a>
       </div>
     {% endif %}
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    // Efecto de animación al cargar la página
-    document.addEventListener('DOMContentLoaded', function() {
-      const items = document.querySelectorAll('.carrito-item');
-      items.forEach((item, index) => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateY(20px)';
-        
-        setTimeout(() => {
-          item.style.transition = 'opacity 0.5s, transform 0.5s';
-          item.style.opacity = '1';
-          item.style.transform = 'translateY(0)';
-        }, index * 100);
-      });
-    });
-    
-    // Manejo de cupones (simulación)
-    document.querySelector('.cupon-btn').addEventListener('click', function() {
-      const cuponInput = document.querySelector('.cupon-input');
-      if (cuponInput.value.trim() !== '') {
-        alert('Cupón aplicado correctamente');
-        cuponInput.value = '';
-      } else {
-        alert('Por favor ingresa un código de cupón válido');
-      }
-    });
-  </script>
 </body>
 </html>
-
