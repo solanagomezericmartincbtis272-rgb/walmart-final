@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>{{ producto.name }}</title>
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
@@ -18,6 +20,24 @@
       border-color: #0071ce;
       transform: scale(1.03);
     }
+
+    /* Barra de categorías */
+    .categories-bar {
+      background: #f8f9fa;
+      padding: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      border-bottom: 1px solid #ddd;
+    }
+    .categories-bar a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .categories-bar a:hover {
+      color: #0071ce;
+    }
   </style>
 
   <script>
@@ -29,113 +49,166 @@
 
 <body class="bg-light">
 
-<div class="container mt-5">
-  <div class="row">
+  <!-- Navbar principal -->
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background:#0071ce;">
+    <div class="container-fluid">
 
-    <!-- Imagen principal -->
-    <div class="col-md-6">
-      <img id="img-principal" src="{{ producto.img }}" class="img-fluid rounded w-100">
+      <!-- LOGO CORRECTO -->
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <img src="{{ url_for('static', filename='img/Walmart-Logo2.png') }}" 
+             alt="Walmart Logo" 
+             style="height: 40px; margin-right: 10px;">
+      </a>
 
-      <!-- Miniaturas -->
-      <div class="row mt-3">
-        {% if producto.images %}
-          {% for imagen in producto.images %}
-          <div class="col-4">
-            <img onclick="cambiarImagen('{{ imagen }}')" src="{{ imagen }}" class="thumb-img">
-          </div>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </div>
-
-    <!-- Información -->
-    <div class="col-md-6">
-      
-      <h2>{{ producto.name }}</h2>
-
-      <!-- Marca -->
-      {% if producto.brand %}
-      <p class="text-muted">
-        Marca: <strong>{{ producto.brand }}</strong>
-      </p>
-      {% endif %}
-
-      <!-- Categoría -->
-      {% if producto.category %}
-      <p class="text-muted">Categoría: <strong>{{ producto.category }}</strong></p>
-      {% endif %}
-
-      <!-- Estrellas -->
-      <div class="text-warning fs-4">
-        {% for i in range(1, 6) %}
-          {% if producto.rating >= i %}
-            <i class="bi bi-star-fill"></i>
-          {% elif producto.rating >= i - 0.5 %}
-            <i class="bi bi-star-half"></i>
-          {% else %}
-            <i class="bi bi-star"></i>
-          {% endif %}
-        {% endfor %}
-        <span class="text-dark fs-6">({{ producto.rating }})</span>
-      </div>
-
-      <!-- Precios -->
-      <h3 class="text-primary mt-2">${{ producto.price }}.00</h3>
-
-      {% if producto.oldPrice %}
-      <p class="text-decoration-line-through text-muted">
-        ${{ producto.oldPrice }}.00
-      </p>
-      <p>
-        Ahorro: <b>${{ producto.oldPrice - producto.price }}.00</b>
-      </p>
-      {% endif %}
-
-      <!-- Descripción -->
-      {% if producto.description %}
-      <p class="mt-3">{{ producto.description }}</p>
-      {% endif %}
-
-      <!-- Lista de detalles -->
-      {% if producto.details %}
-      <h5 class="mt-4">Detalles del producto:</h5>
-      <ul>
-        {% for d in producto.details %}
-        <li>{{ d }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-
-      <!-- Vendedor -->
-      {% if producto.seller %}
-      <p class="mt-3"><strong>Vendido por:</strong> {{ producto.seller }}</p>
-      {% endif %}
-
-      <!-- Política de devolución -->
-      {% if producto.returnPolicy %}
-      <p><strong>Política de devolución:</strong> {{ producto.returnPolicy }}</p>
-      {% endif %}
-
-      <!-- Mensualidades -->
-      {% if producto.monthlyPayments %}
-      <p class="text-info mt-3">
-        <i class="bi bi-credit-card"></i> {{ producto.monthlyPayments }}
-      </p>
-      {% endif %}
-
-      <!-- Botón agregar al carrito -->
-      <form action="{{ url_for('agregar_carrito', producto_id=producto['_id']) }}" method="POST">
-        <button class="btn btn-primary btn-lg mt-3">Agregar al carrito</button>
+      <!-- Buscador -->
+      <form class="d-flex mx-auto" style="width: 50%;" id="search-form" 
+            action="{{ url_for('buscar') }}" method="GET">
+        <input class="form-control me-2" type="search" name="q" placeholder="Buscar productos..." required>
+        <button class="btn btn-light" type="submit">
+          <i class="bi bi-search text-primary"></i>
+        </button>
       </form>
 
+      <!-- Usuario / Carrito / Logout -->
+      <div class="d-flex align-items-center text-white gap-4">
+        <div>
+          <i class="bi bi-person-circle"></i> {{ usuario }}
+        </div>
+        <div>
+          <a href="{{ url_for('carrito') }}" style="color: white; text-decoration: none;">
+            <i class="bi bi-cart3"></i> 
+            <span class="d-none d-md-inline">Ver carrito</span>
+          </a>
+        </div>
+        <div>
+          <a href="{{ url_for('logout') }}" style="color: white; text-decoration: none;">
+            <i class="bi bi-box-arrow-right"></i> Salir
+          </a>
+        </div>
+      </div>
     </div>
+  </nav>
 
+  <!-- Barra de categorías -->
+  <div class="categories-bar">
+    <a href="{{ url_for('categoria', category='super') }}"><i class="bi bi-basket"></i> Super</a>
+    <a href="{{ url_for('categoria', category='tecnologia') }}"><i class="bi bi-pc-display"></i> Tecnología</a>
+    <a href="{{ url_for('categoria', category='moda') }}"><i class="bi bi-bag"></i> Moda</a>
+    <a href="{{ url_for('categoria', category='juguetes') }}"><i class="bi bi-controller"></i> Juguetes</a>
+    <a href="{{ url_for('categoria', category='hogar') }}"><i class="bi bi-house-door"></i> Hogar</a>
+    <a href="{{ url_for('categoria', category='alimentos') }}"><i class="bi bi-cup-hot"></i> Alimentos</a>
+    <a href="{{ url_for('categoria', category='ferreteria') }}"><i class="bi bi-tools"></i> Ferretería</a>
+    <a href="{{ url_for('categoria', category='salud') }}"><i class="bi bi-heart-pulse"></i> Salud</a>
+    <a href="{{ url_for('categoria', category='electronica') }}"><i class="bi bi-tv"></i> Electrónica</a>
   </div>
-</div>
+
+  <!-- CONTENIDO DEL PRODUCTO -->
+  <div class="container mt-5">
+    <div class="row">
+
+      <!-- Imagen principal -->
+      <div class="col-md-6">
+        <img id="img-principal" src="{{ producto.img }}" class="img-fluid rounded w-100">
+
+        <!-- Miniaturas -->
+        <div class="row mt-3">
+          {% if producto.images %}
+            {% for imagen in producto.images %}
+            <div class="col-4">
+              <img onclick="cambiarImagen('{{ imagen }}')" src="{{ imagen }}" class="thumb-img">
+            </div>
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Información -->
+      <div class="col-md-6">
+        
+        <h2>{{ producto.name }}</h2>
+
+        <!-- Marca -->
+        {% if producto.brand %}
+        <p class="text-muted">
+          Marca: <strong>{{ producto.brand }}</strong>
+        </p>
+        {% endif %}
+
+        <!-- Categoría -->
+        {% if producto.category %}
+        <p class="text-muted">Categoría: <strong>{{ producto.category }}</strong></p>
+        {% endif %}
+
+        <!-- Estrellas -->
+        <div class="text-warning fs-4">
+          {% for i in range(1, 6) %}
+            {% if producto.rating >= i %}
+              <i class="bi bi-star-fill"></i>
+            {% elif producto.rating >= i - 0.5 %}
+              <i class="bi bi-star-half"></i>
+            {% else %}
+              <i class="bi bi-star"></i>
+            {% endif %}
+          {% endfor %}
+          <span class="text-dark fs-6">({{ producto.rating }})</span>
+        </div>
+
+        <!-- Precios -->
+        <h3 class="text-primary mt-2">${{ producto.price }}.00</h3>
+
+        {% if producto.oldPrice %}
+        <p class="text-decoration-line-through text-muted">
+          ${{ producto.oldPrice }}.00
+        </p>
+        <p>
+          Ahorro: <b>${{ producto.oldPrice - producto.price }}.00</b>
+        </p>
+        {% endif %}
+
+        <!-- Descripción -->
+        {% if producto.description %}
+        <p class="mt-3">{{ producto.description }}</p>
+        {% endif %}
+
+        <!-- Lista de detalles -->
+        {% if producto.details %}
+        <h5 class="mt-4">Detalles del producto:</h5>
+        <ul>
+          {% for d in producto.details %}
+          <li>{{ d }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+
+        <!-- Vendedor -->
+        {% if producto.seller %}
+        <p class="mt-3"><strong>Vendido por:</strong> {{ producto.seller }}</p>
+        {% endif %}
+
+        <!-- Política de devolución -->
+        {% if producto.returnPolicy %}
+        <p><strong>Política de devolución:</strong> {{ producto.returnPolicy }}</p>
+        {% endif %}
+
+        <!-- Mensualidades -->
+        {% if producto.monthlyPayments %}
+        <p class="text-info mt-3">
+          <i class="bi bi-credit-card"></i> {{ producto.monthlyPayments }}
+        </p>
+        {% endif %}
+
+        <!-- Botón agregar al carrito -->
+        <form action="{{ url_for('agregar_carrito', producto_id=producto['_id']) }}" method="POST">
+          <button class="btn btn-primary btn-lg mt-3">Agregar al carrito</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
 
 </body>
 </html>
-
 
 
 
