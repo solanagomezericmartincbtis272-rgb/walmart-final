@@ -117,6 +117,10 @@
 
   <!-- Barra de categorías -->
   <div class="categories-bar">
+
+    <!-- NUEVA CATEGORÍA -->
+    <a href="{{ url_for('inicio') }}"><i class="bi bi-grid"></i> Todos</a>
+
     <a href="{{ url_for('categoria', category='super') }}"><i class="bi bi-basket"></i> Super</a>
     <a href="{{ url_for('categoria', category='tecnologia') }}"><i class="bi bi-pc-display"></i> Tecnología</a>
     <a href="{{ url_for('categoria', category='moda') }}"><i class="bi bi-bag"></i> Moda</a>
@@ -153,7 +157,6 @@
 
 </body>
 </html>
-
 
 
 
